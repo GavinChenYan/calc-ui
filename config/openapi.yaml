@@ -1,0 +1,510 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://api.calculators.ca'
+info:
+  version: 1.0.0
+  title: DGP Caluclator Microservice API Specification
+paths:
+  /goals/calculate:
+    post:
+      summary: multi-goals calculator
+      operationId: calculateGoals
+      parameters:
+        - name: action
+          in: query
+          required: false
+          description: action item
+          schema:
+            $ref: '#/components/schemas/Action'
+      requestBody:
+        description: goal object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientProfile'
+      security:
+        - calc_auth:
+            - 'read:calc'
+            - 'write:calc'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProfile'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /saving:
+    post:
+      summary: savings calculator
+      operationId: calculateSavings
+      requestBody:
+        description: savings object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SavingsCalcRequest'
+      security:
+        - calc_auth:
+            - 'read:calc'
+            - 'write:calc'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /debt:
+    post:
+      summary: debt calculator
+      operationId: calculateDebt
+      requestBody:
+        description: debt object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DebtCalcRequest'
+      security:
+        - calc_auth:
+            - 'read:calc'
+            - 'write:calc'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    calc_auth:
+      type: oauth2
+      description: This API uses OAuth 2 with the client credential grant flow.
+      flows:
+        implicit:
+          authorizationUrl: 'http://localhost:8080/oauth2/code'
+          scopes:
+            write: modify access
+            read: read access
+  schemas:
+    SavingsCalcRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: id of request object
+        lumpSum:
+          type: number
+          format: double
+          description: initial value to save
+        contributionAmount:
+          type: number
+          format: double
+          description: amount to contribute
+        compoundingFrequency:
+          type: string
+          description: 'frequency of contribution biweekly,monthly,etc.'
+        futureDate:
+          type: string
+          format: date
+          description: future end date of savings goal
+        goalTargetAmount:
+          type: number
+          format: double
+          description: savings goal balance
+        computeOptimalSolution:
+          type: boolean
+          description: flag to compute optimal solution for current savings scenario
+        interestRateRegAcc:
+          type: number
+          format: double
+          description: interest rate for registered account
+        interestRateNonRegAcc:
+          type: number
+          format: double
+          description: interest rate for non-registered account
+        inflationRate:
+          type: number
+          format: double
+          description: inflation rate
+        taxRate:
+          type: number
+          format: double
+          description: tax rate
+        computeInflationRegAcc:
+          type: boolean
+          description: flag to compute inflaction for registered account
+        computeInflationNonRegAcc:
+          type: boolean
+          description: flag to compute inflaction for non-registered account
+        contributionLimitRegAcc:
+          type: number
+          format: double
+          description: contribution limit for registered account
+        contributionNonRegAcc:
+          type: number
+          format: double
+          description: contribution for non registered account
+        contributionRegAcc:
+          type: number
+          format: double
+          description: contribution for registered account
+        initialRegAccValue:
+          type: number
+          format: double
+          description: initial value for registered accound
+        initialNonRegAccValue:
+          type: number
+          format: double
+          description: initial value for non registered account
+    DebtCalcRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: id of request object
+        loanType:
+          type: string
+          description: type of loan
+        computeOptimalSolution:
+          type: boolean
+          description: flag to compute optimal solution for current savings scenario
+        initialBalance:
+          type: number
+          format: double
+          description: initial balance of loan
+        annualInterestRate:
+          type: number
+          format: double
+          description: interest rate
+        interestRateCompoundingFrequency:
+          type: string
+          description: 'interest rate compounding frequency. One of (MONTHLY, ANNUAL)'
+        initialContribution:
+          type: number
+          format: double
+          description: initial contribution to loan
+        additionalContribution:
+          type: number
+          format: double
+          description: additional contribution to loan
+        periodicContribution:
+          type: number
+          format: double
+          description: amount to contribute
+        contributionFrequency:
+          type: string
+          description: 'periodic contribution frequency. One of (MONTHLY, ANNUAL)'
+        minAnnualContribution:
+          type: number
+          format: double
+          description: min amount to contribute
+        maxAnnualContribution:
+          type: number
+          format: double
+          description: max amount to contribute
+        goalTargetYear:
+          type: string
+          format: date
+          description: future end date of debt repayment goal
+    ClientProfile:
+      type: object
+      properties:
+        clientId:
+          type: string
+        clientXRefId:
+          type: string
+        clientName:
+          type: string          
+        message:
+          type: string
+        totalAsset:
+          type: number
+          format: double
+        liability:
+          type: number
+          format: double
+        income:
+          type: number
+          format: double
+        expenses:
+          type: number
+          format: double
+        savings:
+          type: number
+          format: double
+        inflationRate:
+          type: number
+          format: double
+        taxRate:
+          type: number
+          format: double
+        additionalSurplus:
+          type: number
+          format: double
+        additionalSurplusFrequency:
+          $ref: '#/components/schemas/Frequency'
+        goals:
+          type: array
+          items:
+            $ref: '#/components/schemas/Goal'
+    Goal:
+      type: object
+      properties:
+        goalId:
+          type: string
+        goalName:
+          type: string
+        goalType:
+          $ref: '#/components/schemas/GoalType'
+        lumpSum:
+          type: number
+          format: double
+        goalTargetAmount:
+          type: number
+          format: double
+        goalTargetYear:
+          type: integer
+        goalPriority:
+          type: integer
+        startDate:
+          type: string
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+        completeDate:
+          type: string
+        allocations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Allocation'
+    Allocation:
+      type: object
+      properties:
+        allocationId:
+          type: string
+        allocationType:
+          $ref: '#/components/schemas/AllocationType'
+        finalAmount:
+          type: number
+          format: double
+        costOfBorrowing:
+          type: number
+          format: double
+        completedYear:
+          type: integer
+        modified:
+          type: boolean          
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+        totalSchedule:
+          $ref: '#/components/schemas/Schedule'
+    Product:
+      type: object
+      properties:
+        productId:
+          type: string
+        accountNo:
+          type: string
+        institution:
+          type: string
+        transit:
+          type: string
+        balance:
+          type: number
+          format: double
+        interestRateAcc:
+          type: number
+          format: double
+        maxAnnualContribution:
+          type: number
+          format: double
+        contributionAmount:
+          type: number
+          format: double
+        contributionLimitAcc:
+          type: number
+          format: double
+        additionalContribution:
+          type: number
+          format: double
+        initialContribution:
+          type: number
+          format: double
+        minimumPayment:
+          type: number
+          format: double
+        taxRate:
+          type: number
+          format: double
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        productType:
+          $ref: '#/components/schemas/ProductType'
+        compoundingFrequency:
+          $ref: '#/components/schemas/Frequency'
+        interestRateCompoundingFrequency:
+          $ref: '#/components/schemas/Frequency'
+        additionalContributionFrequency:
+          $ref: '#/components/schemas/Frequency'
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+        totalSchedule:
+          $ref: '#/components/schemas/Schedule'
+    Schedule:
+      type: object
+      properties:
+        period:
+          type: string
+        startingBalance:
+          type: number
+          format: double
+        endingBalance:
+          type: number
+          format: double
+        interest:
+          type: number
+          format: double
+        percentCompleted:
+          type: number
+          format: double
+        savingSchedule:
+          $ref: '#/components/schemas/SavingSchedule'
+        debtSchedule:
+          $ref: '#/components/schemas/DebtSchedule'
+        unallocatedFunds:
+          type: number
+          format: double
+    SavingSchedule:
+      type: object
+      properties:
+        afterTaxInterest:
+          type: number
+          format: double
+        contribution:
+          type: number
+          format: double
+    DebtSchedule:
+      type: object
+      properties:
+        payment:
+          type: number
+          format: double
+        prepayment:
+          type: number
+          format: double
+        principal:
+          type: number
+          format: double
+        lumpsumPayment:
+          type: number
+          format: double
+        remainingPrincipal:
+          type: number
+          format: double
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    CurrencyCode:
+      type: string
+      enum:
+        - CAD
+        - USD
+        - EUR
+    ProductType:
+      description: The product type enum
+      type: string
+      enum:
+        - RRSP
+        - TFSA
+        - RESP
+        - SAVING
+        - LINE_OF_CREDIT
+        - MORTGAGE
+        - STUDENT_LOAN
+    Frequency:
+      description: The frequency of the goal
+      type: string
+      enum:
+        - NA
+        - ONE_TIME
+        - YEARLY
+        - SEMI_YEARLY
+        - MONTHLY
+        - BI_WEEKLY
+        - WEEKLY
+        - DAILY
+    AllocationType:
+      description: The allocation type
+      type: string
+      enum:
+        - OPTIMAL
+        - CURRENT
+        - WHATIF
+        - BEST_ALLOCATOR
+    GoalType:
+      description: The goal type
+      type: string
+      enum:
+        - SAVING
+        - DEBT
+        - SAVING_FOR_EDUCATION
+        - SAVING_FOR_RETIREMENT
+        - STUDENT_LOAN
+        - MORTGAGE
+    Action:
+      description: The action item for the user
+      type: string
+      enum:
+        - money
+        - calc
+        
