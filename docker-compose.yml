@@ -1,0 +1,20 @@
+version: "2"
+#
+# Services
+#
+services:
+  calculation-service:
+      build: ./service
+      volumes:
+        - ./docker/calculation-service/config:/config
+      ports:
+        - 8443:8443
+      networks:
+          - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    # driver: bridge
+    external: true

@@ -1,0 +1,13 @@
+
+# Singleton service factory configuration/IoC injection
+singletons:
+# StartupHookProvider implementations, there are one to many and they are called in the same sequence defined.
+# - com.networknt.server.StartupHookProvider:
+  # - com.networknt.server.Test1StartupHook
+  # - com.networknt.server.Test2StartupHook
+# ShutdownHookProvider implementations, there are one to many and they are called in the same sequence defined.
+# - com.networknt.server.ShutdownHookProvider:
+  # - com.networknt.server.Test1ShutdownHook
+
+- io.beanmapper.BeanMapper: com.capco.utils.DependencyInjector::beanMapper
+- com.capco.calculator.adapter.CalculatorAdapter: com.capco.utils.DependencyInjector::calculatorAdapter
