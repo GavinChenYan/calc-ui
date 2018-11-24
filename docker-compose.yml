@@ -7,10 +7,13 @@ services:
       build: ./service
       volumes:
         - ./docker/calculation-service/config:/config
+        - ./ui/test-ui:/public
       ports:
         - 8443:8443
       networks:
           - localnet
+
+
 
 # Networks
 #

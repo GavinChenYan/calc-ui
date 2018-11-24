@@ -42,6 +42,7 @@ handlers:
   - com.networknt.audit.AuditHandler@audit
   - com.networknt.sanitizer.SanitizerHandler@sanitizer
   - com.networknt.openapi.ValidatorHandler@validator
+  - com.networknt.resource.PathResourceHandler@resource
   # Customer business domain specific cross-cutting concerns handlers
   # - com.example.validator.CustomizedValidator@custvalidator
   # Framework endpoint handlers
@@ -105,3 +106,6 @@ paths:
     method: 'get'
     exec:
       - swaggerui
+
+defaultHandlers:
+  - resource
