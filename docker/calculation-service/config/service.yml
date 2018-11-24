@@ -11,3 +11,4 @@ singletons:
 
 - io.beanmapper.BeanMapper: com.capco.utils.DependencyInjector::beanMapper
 - com.capco.calculator.adapter.CalculatorAdapter: com.capco.utils.DependencyInjector::calculatorAdapter
+- com.capco.dgp.calculator.core.Calculator: com.capco.utils.DependencyInjector::goalsCalculator
