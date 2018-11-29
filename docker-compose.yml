@@ -9,7 +9,7 @@ services:
         - ./docker/calculation-service/config:/config
         - ./ui/test-ui:/public
       ports:
-        - 8443:8443
+        - 8090:8090
       networks:
           - localnet
 
