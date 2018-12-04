@@ -53,8 +53,6 @@ handlers:
   # - com.networknt.metrics.prometheus.PrometheusGetHandler@getprometheus
   # Business Handlers
   - com.capco.calculator.handler.GoalsCalculatePostHandler
-  - com.capco.calculator.handler.SavingPostHandler
-  - com.capco.calculator.handler.DebtPostHandler
 
 
 chains:
@@ -76,16 +74,6 @@ paths:
     exec:
       - default
       - com.capco.calculator.handler.GoalsCalculatePostHandler
-  - path: '/saving'
-    method: 'POST'
-    exec:
-      - default
-      - com.capco.calculator.handler.SavingPostHandler
-  - path: '/debt'
-    method: 'POST'
-    exec:
-      - default
-      - com.capco.calculator.handler.DebtPostHandler
 
   - path: '/health/com.capco.calculation-service-1.0.0-SNAPSHOT'
     method: 'get'
