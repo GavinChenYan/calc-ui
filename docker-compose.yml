@@ -7,7 +7,7 @@ services:
       build: ./service
       volumes:
         - ./docker/calculation-service/config:/config
-        - ./ui/test-ui:/public
+        - ./ui/dgp-calculators-playground:/public
       ports:
         - 8090:8090
       networks:
