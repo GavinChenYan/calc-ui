@@ -10,5 +10,8 @@ singletons:
   # - com.networknt.server.Test1ShutdownHook
 
 - io.beanmapper.BeanMapper: com.capco.utils.DependencyInjector::beanMapper
-- com.capco.calculator.adapter.CalculatorAdapter: com.capco.utils.DependencyInjector::calculatorAdapter
 - com.capco.dgp.calculator.core.Calculator: com.capco.utils.DependencyInjector::goalsCalculator
+- com.capco.calculator.validator.CalcActionGoalsValidator:
+  - com.capco.calculator.validator.CalcActionGoalsValidator
+- com.capco.calculator.validator.MoneyActionGoalsValidator:
+  - com.capco.calculator.validator.MoneyActionGoalsValidator
